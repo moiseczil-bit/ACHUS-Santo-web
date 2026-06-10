@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RK NEWS TV — Le Direct Sport</title>
+    <style>
+        :root {
+            --bg-color: #06060c;
+            --card-bg: #0f0f1e;
+            --accent-color: #e8c547; /* Or pour le côté Premium */
+            --text-color: #f5f2ec;
+            --live-red: #ce1126;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+
+        .logo span.news { color: #ffffff; background: var(--live-red); padding: 2px 8px; border-radius: 4px; margin-left: 4px; font-size: 20px; }
+        .logo span.tv { color: var(--accent-color); margin-left: 5px; }
+
+        .live-badge {
+            background-color: transparent;
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 5px 14px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 11px;
+            letter-spacing: 1px;
+        }
+
+        /* ====== STUDIO LAYOUT ====== */
+        .tv-container {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: 20px;
+            margin-top: 25px;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .main-screen {
+            background-color: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7);
+            aspect-ratio: 16 / 9;
+            position: relative;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .main-screen iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .playlist-side {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-height: 550px;
+            overflow-y: auto;
+            border: 1px solid rgba(232, 197, 71, 0.1);
+        }
+
+        .playlist-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--accent-color);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding-bottom: 8px;
+        }
+
+        .video-item {
+            display: flex;
+            gap: 12px;
+            background: rgba(255,255,255,0.02);
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+
+        .video-item:hover {
+            background: rgba(232, 197, 71, 0.05);
+            border-color: rgba(232, 197, 71, 0.2);
+        }
+
+        .video-thumb {
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .video-info h4 {
+            margin: 0;
+            font-size: 14px;
+            line-height: 1.3;
+            font-weight: 600;
+        }
+
+        @media (max-width: 900px) {
+            .tv-container { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">RK<span class="news">NEWS</span><span class="tv">TV</span></div>
+    <div class="live-badge" id="live-status">MODE CONTINU</div>
+</header>
+
+<div class="tv-container">
+    <!-- ÉCRAN PRINCIPAL DE DIFFUSION -->
+    <div class="main-screen">
+        <!-- ICI : Remplacer l'ID après "list=" par l'ID de leur playlist de secours YouTube principale -->
+        <iframe id="tv-player" src="https://www.youtube.com/embed/videoseries?list=PL_METTRE_PLAYLIST_ICI" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+
+    <!-- GRILLE DES CHAÎNES / PROGRAMMES -->
+    <div class="playlist-side">
+        <div class="playlist-title">Chaînes disponibles</div>
+
+        <!-- CHAÎNE 1 : LE LIVE DIRECT -->
+        <div class="video-item" onclick="changerChaine('METTRE_ID_LIVE_YOUTUBE_ICI', true)">
+            <div class="video-thumb">🔴</div>
+            <div class="video-info">
+                <h4>[DIRECT] Antenne Principale</h4>
+                <p style="margin:5px 0 0; font-size:11px; color:#888;">Rudy & Kimberly en Live</p>
+            </div>
+        </div>
+
+        <!-- CHAÎNE 2 : LES EMISSIONS ANALYSES -->
+        <div class="video-item" onclick="changerChaine('METTRE_ID_PLAYLIST_ANALYSES_ICI', false)">
+            <div class="video-thumb">⚽</div>
+            <div class="video-info">
+                <h4>Décryptage & Tactique</h4>
+                <p style="margin:5px 0 0; font-size:11px; color:#888;">Les replays exclusifs</p>
+            </div>
+        </div>
+
+        <!-- CHAÎNE 3 : LES INTERVIEWS -->
+        <div class="video-item" onclick="changerChaine('METTRE_ID_PLAYLIST_INTERVIEWS_ICI', false)">
+            <div class="video-thumb">🎙️</div>
+            <div class="video-info">
+                <h4>Zone Interviews</h4>
+                <p style="margin:5px 0 0; font-size:11px; color:#888;">Rencontres avec les acteurs</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function changerChaine(id, isLive) {
+        const player = document.getElementById('tv-player');
+        const status = document.getElementById('live-status');
+
+        if (isLive) {
+            player.src = "https://www.youtube.com/embed/" + id + "?autoplay=1";
+            status.textContent = "🔴 EN DIRECT";
+            status.style.backgroundColor = "#ce1126";
+            status.style.color = "#ffffff";
+            status.style.borderColor = "#ce1126";
+        } else {
+            player.src = "https://www.youtube.com/embed/videoseries?list=" + id + "&autoplay=1";
+            status.textContent = "MODE CONTINU";
+            status.style.backgroundColor = "transparent";
+            status.style.borderColor = "#e8c547";
+            status.style.color = "#e8c547";
+        }
+    }
+</script>
+
+</body>
+</html>
