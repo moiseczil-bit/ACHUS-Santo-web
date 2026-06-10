@@ -1,215 +1,471 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RK NEWS TV — Le Direct Sport</title>
-    <style>
-        :root {
-            --bg-color: #06060c;
-            --card-bg: #0f0f1e;
-            --accent-color: #e8c547; /* Or pour le côté Premium */
-            --text-color: #f5f2ec;
-            --live-red: #ce1126;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RK NEWS TV — Le Direct Sport</title>
+<meta name="description" content="RK NEWS TV — Le direct sport avec Rudy Sanon & Kimberly. Mondial 2026, Sélection Haïtienne, décryptages et interviews exclusives.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚽</text></svg>">
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 20px;
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ink: '#05050b',
+          card: '#0f0f1e',
+          haiti: { blue: '#00209F', red: '#D21034' },
+          gold: '#E8C547',
+          gold2: '#FFF0A0',
+        },
+        fontFamily: {
+          display: ["'Anton'", "sans-serif"],
+          body: ["'Inter'", "sans-serif"],
+        },
+        boxShadow: {
+          glow: '0 0 40px rgba(232,197,71,0.35)',
+          redglow: '0 0 40px rgba(210,16,52,0.45)',
         }
+      }
+    }
+  }
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
 
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
+<style>
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Inter', sans-serif; background:#05050b; }
+  .font-display { font-family: 'Anton', sans-serif; letter-spacing: 0.04em; }
 
-        .logo {
-            font-size: 26px;
-            font-weight: 800;
-            letter-spacing: 2px;
-        }
+  /* Scroll reveal */
+  .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease, transform 0.8s ease; }
+  .reveal.in-view { opacity: 1; transform: translateY(0); }
 
-        .logo span.news { color: #ffffff; background: var(--live-red); padding: 2px 8px; border-radius: 4px; margin-left: 4px; font-size: 20px; }
-        .logo span.tv { color: var(--accent-color); margin-left: 5px; }
+  /* Pulsing live dot */
+  .pulse-dot { position: relative; }
+  .pulse-dot::before {
+    content: ''; position: absolute; inset: -6px; border-radius: 9999px;
+    background: rgba(210,16,52,0.55); animation: pulseRing 1.6s ease-out infinite;
+  }
+  @keyframes pulseRing {
+    0% { transform: scale(0.6); opacity: 0.9; }
+    100% { transform: scale(2.2); opacity: 0; }
+  }
 
-        .live-badge {
-            background-color: transparent;
-            border: 1px solid var(--accent-color);
-            color: var(--accent-color);
-            padding: 5px 14px;
-            border-radius: 4px;
-            font-weight: bold;
-            font-size: 11px;
-            letter-spacing: 1px;
-        }
+  /* Gradient animated text */
+  .gradient-text {
+    background: linear-gradient(90deg, #E8C547, #FFF0A0, #D21034, #00209F, #E8C547);
+    background-size: 300% auto;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: shine 8s linear infinite;
+  }
+  @keyframes shine { to { background-position: 300% center; } }
 
-        .live-badge.live {
-            background-color: var(--live-red);
-            color: #ffffff;
-            border-color: var(--live-red);
-        }
+  /* Marquee ticker */
+  .marquee-track { display: inline-flex; white-space: nowrap; animation: marquee 28s linear infinite; }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
-        /* ====== STUDIO LAYOUT ====== */
-        .tv-container {
-            display: grid;
-            grid-template-columns: 3fr 1fr;
-            gap: 20px;
-            margin-top: 25px;
-            max-width: 1400px;
-            margin-left: auto;
-            margin-right: auto;
-        }
+  /* Bounce arrow */
+  @keyframes bounceY { 0%,100% { transform: translateY(0); } 50% { transform: translateY(10px); } }
+  .bounce { animation: bounceY 1.8s ease-in-out infinite; }
 
-        .main-screen {
-            background-color: #000;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.7);
-            aspect-ratio: 16 / 9;
-            position: relative;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
+  /* Diagonal stripes bg for Mondial section */
+  .stripes {
+    background-image: repeating-linear-gradient(135deg, rgba(255,255,255,0.045) 0 22px, transparent 22px 44px);
+  }
 
-        .main-screen iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
+  /* Custom scrollbar */
+  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar-track { background: #05050b; }
+  ::-webkit-scrollbar-thumb { background: #E8C547; border-radius: 6px; }
 
-        .playlist-side {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            max-height: 550px;
-            overflow-y: auto;
-            border: 1px solid rgba(232, 197, 71, 0.1);
-        }
+  /* Active nav underline */
+  .nav-link { position: relative; }
+  .nav-link::after {
+    content: ''; position: absolute; left: 0; bottom: -4px; height: 2px; width: 0;
+    background: #E8C547; transition: width 0.3s ease;
+  }
+  .nav-link:hover::after, .nav-link.active::after { width: 100%; }
 
-        .playlist-title {
-            font-size: 14px;
-            font-weight: bold;
-            color: var(--accent-color);
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-bottom: 10px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            padding-bottom: 8px;
-        }
+  .video-window { transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease; }
+  .video-window:hover { transform: translateY(-4px) scale(1.015); box-shadow: 0 20px 45px rgba(0,0,0,0.6); border-color: rgba(232,197,71,0.5); }
+  .video-window.active { border-color: #D21034; box-shadow: 0 0 0 2px #D21034, 0 20px 45px rgba(210,16,52,0.35); }
 
-        .video-item {
-            display: flex;
-            gap: 12px;
-            background: rgba(255,255,255,0.02);
-            padding: 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            border: 1px solid transparent;
-        }
+  .gallery-item img { transition: transform 0.6s ease, filter 0.6s ease; }
+  .gallery-item:hover img { transform: scale(1.08); filter: brightness(1.05) saturate(1.15); }
 
-        .video-item:hover {
-            background: rgba(232, 197, 71, 0.05);
-            border-color: rgba(232, 197, 71, 0.2);
-        }
+  .countdown-box {
+    background: linear-gradient(160deg, rgba(232,197,71,0.12), rgba(210,16,52,0.08));
+    backdrop-filter: blur(6px);
+  }
 
-        .video-thumb {
-            font-size: 20px;
-            display: flex;
-            align-items: center;
-        }
-
-        .video-info h4 {
-            margin: 0;
-            font-size: 14px;
-            line-height: 1.3;
-            font-weight: 600;
-        }
-
-        @media (max-width: 900px) {
-            .tv-container { grid-template-columns: 1fr; }
-        }
-    </style>
+  /* World cup hero blob */
+  .blob { filter: blur(90px); }
+</style>
 </head>
-<body>
+<body class="bg-ink text-[#f5f2ec] antialiased overflow-x-hidden">
 
-<header>
-    <div class="logo">RK<span class="news">NEWS</span><span class="tv">TV</span></div>
-    <div class="live-badge live" id="live-status">🔴 EN DIRECT</div>
+<!-- Scroll progress bar -->
+<div id="progress" class="fixed top-0 left-0 h-1 bg-gradient-to-r from-gold via-haiti-red to-haiti-blue z-[60]" style="width:0%"></div>
+
+<!-- ============ NAV ============ -->
+<header class="fixed top-0 inset-x-0 z-50 backdrop-blur-md bg-ink/70 border-b border-white/5">
+  <div class="max-w-7xl mx-auto px-5 md:px-10 h-16 flex items-center justify-between">
+    <a href="#accueil" class="font-display text-xl md:text-2xl tracking-wider flex items-center gap-2">
+      RK<span class="bg-haiti-red text-white px-2 rounded ml-1">NEWS</span><span class="text-gold">TV</span>
+    </a>
+
+    <nav class="hidden md:flex items-center gap-8 text-sm font-semibold uppercase tracking-wider">
+      <a href="#accueil" class="nav-link active">Accueil</a>
+      <a href="#direct" class="nav-link">Le Direct</a>
+      <a href="#mondial" class="nav-link">Mondial 2026</a>
+      <a href="#selection" class="nav-link">Sélection Haïtienne</a>
+      <a href="#galerie" class="nav-link">Galerie</a>
+    </nav>
+
+    <div class="flex items-center gap-3">
+      <span class="hidden sm:flex items-center gap-2 border border-haiti-red/60 text-haiti-red text-[11px] font-bold uppercase px-3 py-1.5 rounded-full">
+        <span class="w-2 h-2 rounded-full bg-haiti-red pulse-dot"></span> En direct
+      </span>
+      <button id="menuBtn" class="md:hidden text-2xl leading-none">☰</button>
+    </div>
+  </div>
+
+  <!-- Mobile menu -->
+  <div id="mobileMenu" class="hidden md:hidden flex-col gap-1 px-5 pb-4 text-sm font-semibold uppercase tracking-wider bg-ink/95">
+    <a href="#accueil" class="block py-2 border-b border-white/5">Accueil</a>
+    <a href="#direct" class="block py-2 border-b border-white/5">Le Direct</a>
+    <a href="#mondial" class="block py-2 border-b border-white/5">Mondial 2026</a>
+    <a href="#selection" class="block py-2 border-b border-white/5">Sélection Haïtienne</a>
+    <a href="#galerie" class="block py-2">Galerie</a>
+  </div>
 </header>
 
-<div class="tv-container">
-    <!-- ÉCRAN PRINCIPAL DE DIFFUSION -->
-    <div class="main-screen">
-        <!-- Affiche automatiquement le direct en cours de la chaîne YouTube de RK NEWS TV -->
-        <iframe id="tv-player" src="https://www.youtube.com/embed/live_stream?channel=UCmHhzmUQNtqdPtk22GVR2Bg&autoplay=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<!-- ============ HERO ============ -->
+<section id="accueil" class="relative min-h-screen flex items-end pt-24">
+  <div class="absolute inset-0">
+    <img src="assets/rk-news-tv/rudy-kimberly-hero.jpg" alt="Rudy Sanon et Kimberly en plateau, Team Rudy" class="w-full h-full object-cover">
+    <div class="absolute inset-0 bg-gradient-to-t from-ink via-ink/85 to-ink/30"></div>
+    <div class="absolute inset-0 bg-gradient-to-r from-haiti-blue/30 via-transparent to-haiti-red/30 mix-blend-overlay"></div>
+  </div>
+
+  <div class="relative z-10 max-w-7xl mx-auto px-5 md:px-10 pb-20 md:pb-28 w-full">
+    <p class="reveal uppercase tracking-[0.3em] text-gold text-xs md:text-sm font-bold mb-4">Bienvenue sur</p>
+    <h1 class="reveal font-display text-5xl sm:text-7xl md:text-8xl leading-[0.95] gradient-text mb-6">
+      RK NEWS TV
+    </h1>
+    <p class="reveal text-lg md:text-2xl font-medium max-w-2xl mb-2">
+      Le Direct Sport avec <span class="text-gold font-bold">Rudy Sanon</span> &amp; <span class="text-gold font-bold">Kimberly</span>
+    </p>
+    <p class="reveal text-sm md:text-base text-white/70 max-w-xl mb-10">
+      Décryptages, interviews et passion du ballon rond — en direct, tous les jours, en route vers le Mondial 2026.
+    </p>
+    <div class="reveal flex flex-wrap gap-4">
+      <a href="#direct" class="px-7 py-3.5 rounded-full bg-haiti-red text-white font-bold uppercase text-xs tracking-widest shadow-redglow hover:scale-105 transition-transform">
+        🔴 Voir le Direct
+      </a>
+      <a href="#mondial" class="px-7 py-3.5 rounded-full border border-gold text-gold font-bold uppercase text-xs tracking-widest hover:bg-gold hover:text-ink transition-colors">
+        ⚽ Mondial 2026
+      </a>
     </div>
+  </div>
 
-    <!-- GRILLE DES CHAÎNES / PROGRAMMES -->
-    <div class="playlist-side">
-        <div class="playlist-title">Chaînes disponibles</div>
+  <a href="#direct" class="bounce absolute bottom-6 left-1/2 -translate-x-1/2 text-gold text-2xl z-10">⌄</a>
+</section>
 
-        <!-- CHAÎNE 1 : LE LIVE DIRECT -->
-        <div class="video-item" onclick="changerChaineLive()">
-            <div class="video-thumb">🔴</div>
-            <div class="video-info">
-                <h4>[DIRECT] Antenne Principale</h4>
-                <p style="margin:5px 0 0; font-size:11px; color:#888;">Rudy & Kimberly en Live</p>
-            </div>
-        </div>
-
-        <!-- CHAÎNE 2 : LES EMISSIONS ANALYSES -->
-        <div class="video-item" onclick="changerChaine('METTRE_ID_PLAYLIST_ANALYSES_ICI', false)">
-            <div class="video-thumb">⚽</div>
-            <div class="video-info">
-                <h4>Décryptage & Tactique</h4>
-                <p style="margin:5px 0 0; font-size:11px; color:#888;">Les replays exclusifs</p>
-            </div>
-        </div>
-
-        <!-- CHAÎNE 3 : LES INTERVIEWS -->
-        <div class="video-item" onclick="changerChaine('METTRE_ID_PLAYLIST_INTERVIEWS_ICI', false)">
-            <div class="video-thumb">🎙️</div>
-            <div class="video-info">
-                <h4>Zone Interviews</h4>
-                <p style="margin:5px 0 0; font-size:11px; color:#888;">Rencontres avec les acteurs</p>
-            </div>
-        </div>
-    </div>
+<!-- ============ TICKER ============ -->
+<div class="bg-haiti-red border-y border-black/30 overflow-hidden py-2.5">
+  <div class="marquee-track text-sm font-bold uppercase tracking-wide text-white">
+    <span class="px-8">⚽ Mondial 2026 — l'effervescence est à son comble</span>
+    <span class="px-8">🇭🇹 Allez les Grenadiers !</span>
+    <span class="px-8">🔴 RK News TV — En direct avec Rudy &amp; Kimberly</span>
+    <span class="px-8">⚽ Mondial 2026 — l'effervescence est à son comble</span>
+    <span class="px-8">🇭🇹 Allez les Grenadiers !</span>
+    <span class="px-8">🔴 RK News TV — En direct avec Rudy &amp; Kimberly</span>
+    <span class="px-8">⚽ Mondial 2026 — l'effervescence est à son comble</span>
+    <span class="px-8">🇭🇹 Allez les Grenadiers !</span>
+    <span class="px-8">🔴 RK News TV — En direct avec Rudy &amp; Kimberly</span>
+  </div>
 </div>
 
+<!-- ============ DIRECT / FENÊTRES ============ -->
+<section id="direct" class="py-20 md:py-28 px-5 md:px-10 max-w-7xl mx-auto">
+  <div class="reveal mb-12">
+    <p class="uppercase tracking-[0.3em] text-gold text-xs font-bold mb-2">Studio en direct</p>
+    <h2 class="font-display text-4xl md:text-6xl">L'ANTENNE <span class="text-haiti-red">RK NEWS TV</span></h2>
+    <p class="text-white/60 mt-3 max-w-2xl">Comme à la radio-télé : choisissez votre fenêtre et suivez l'émission en direct ou en mode continu.</p>
+  </div>
+
+  <div class="grid lg:grid-cols-3 gap-6">
+    <!-- Main player -->
+    <div class="lg:col-span-2 reveal">
+      <div class="bg-black rounded-2xl overflow-hidden shadow-2xl border border-white/5 aspect-video relative">
+        <iframe id="tv-player" class="w-full h-full" src="https://www.youtube.com/embed/live_stream?channel=UCmHhzmUQNtqdPtk22GVR2Bg&autoplay=1&mute=1"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <div id="live-status" class="absolute top-3 left-3 flex items-center gap-2 bg-haiti-red/90 text-white text-[11px] font-bold uppercase px-3 py-1.5 rounded-full">
+          <span class="w-2 h-2 rounded-full bg-white pulse-dot"></span> En direct
+        </div>
+      </div>
+    </div>
+
+    <!-- Windows -->
+    <div class="grid grid-rows-3 gap-5 reveal">
+      <div onclick="changerChaineLive()" data-window="live" class="video-window active cursor-pointer bg-card rounded-xl p-4 flex gap-4 items-center border border-white/5">
+        <div class="text-3xl">🔴</div>
+        <div>
+          <h3 class="font-display text-lg leading-tight">Antenne Principale</h3>
+          <p class="text-xs text-white/50 mt-1">Rudy &amp; Kimberly — Le Direct</p>
+        </div>
+      </div>
+
+      <div onclick="changerChaine('UCmHhzmUQNtqdPtk22GVR2Bg', 'analyses')" data-window="analyses" class="video-window cursor-pointer bg-card rounded-xl p-4 flex gap-4 items-center border border-white/5">
+        <div class="text-3xl">⚽</div>
+        <div>
+          <h3 class="font-display text-lg leading-tight">Décryptage &amp; Tactique</h3>
+          <p class="text-xs text-white/50 mt-1">Les replays exclusifs de la chaîne</p>
+        </div>
+      </div>
+
+      <div onclick="changerChaine('UCmHhzmUQNtqdPtk22GVR2Bg', 'interviews')" data-window="interviews" class="video-window cursor-pointer bg-card rounded-xl p-4 flex gap-4 items-center border border-white/5">
+        <div class="text-3xl">🎙️</div>
+        <div>
+          <h3 class="font-display text-lg leading-tight">Zone Interviews</h3>
+          <p class="text-xs text-white/50 mt-1">Rencontres avec les acteurs du foot</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="text-xs text-white/40 mt-4 reveal">📡 La fenêtre principale affiche automatiquement le direct en cours de la chaîne TEAM RUDY OFFICIEL.</p>
+</section>
+
+<!-- ============ MONDIAL 2026 ============ -->
+<section id="mondial" class="relative py-20 md:py-28 px-5 md:px-10 overflow-hidden">
+  <div class="absolute -top-40 -left-40 w-96 h-96 bg-haiti-blue/40 rounded-full blob"></div>
+  <div class="absolute -bottom-40 -right-40 w-96 h-96 bg-haiti-red/40 rounded-full blob"></div>
+  <div class="absolute inset-0 stripes"></div>
+
+  <div class="relative max-w-7xl mx-auto">
+    <div class="reveal text-center mb-14">
+      <p class="uppercase tracking-[0.3em] text-gold text-xs font-bold mb-2">26 juin — 19 juillet 2026</p>
+      <h2 class="font-display text-4xl md:text-7xl gradient-text">COUPE DU MONDE 2026</h2>
+      <p class="text-white/60 mt-4 max-w-2xl mx-auto">États-Unis 🇺🇸 · Canada 🇨🇦 · Mexique 🇲🇽 — la plus grande Coupe du Monde de l'histoire avec 48 équipes, suivie en direct sur RK NEWS TV.</p>
+    </div>
+
+    <!-- Countdown -->
+    <div class="reveal grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto mb-16">
+      <div class="countdown-box rounded-2xl border border-gold/20 p-5 text-center">
+        <div id="cd-days" class="font-display text-4xl md:text-6xl text-gold">00</div>
+        <div class="text-[11px] uppercase tracking-widest text-white/60 mt-1">Jours</div>
+      </div>
+      <div class="countdown-box rounded-2xl border border-gold/20 p-5 text-center">
+        <div id="cd-hours" class="font-display text-4xl md:text-6xl text-gold">00</div>
+        <div class="text-[11px] uppercase tracking-widest text-white/60 mt-1">Heures</div>
+      </div>
+      <div class="countdown-box rounded-2xl border border-gold/20 p-5 text-center">
+        <div id="cd-minutes" class="font-display text-4xl md:text-6xl text-gold">00</div>
+        <div class="text-[11px] uppercase tracking-widest text-white/60 mt-1">Minutes</div>
+      </div>
+      <div class="countdown-box rounded-2xl border border-gold/20 p-5 text-center">
+        <div id="cd-seconds" class="font-display text-4xl md:text-6xl text-gold">00</div>
+        <div class="text-[11px] uppercase tracking-widest text-white/60 mt-1">Secondes</div>
+      </div>
+    </div>
+
+    <!-- Info cards -->
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="reveal bg-card/80 border border-white/5 rounded-2xl p-7 hover:border-gold/40 transition-colors">
+        <div class="text-3xl mb-3">🌎</div>
+        <h3 class="font-display text-xl mb-2">3 pays hôtes</h3>
+        <p class="text-sm text-white/60">Pour la première fois, le Mondial est co-organisé par les États-Unis, le Canada et le Mexique, avec 16 villes hôtes.</p>
+      </div>
+      <div class="reveal bg-card/80 border border-white/5 rounded-2xl p-7 hover:border-gold/40 transition-colors">
+        <div class="text-3xl mb-3">🏆</div>
+        <h3 class="font-display text-xl mb-2">48 équipes</h3>
+        <p class="text-sm text-white/60">Un format élargi inédit, avec 12 groupes de 4 — plus de matchs, plus d'émotions, plus de surprises.</p>
+      </div>
+      <div class="reveal bg-card/80 border border-white/5 rounded-2xl p-7 hover:border-gold/40 transition-colors">
+        <div class="text-3xl mb-3">📺</div>
+        <h3 class="font-display text-xl mb-2">Suivi en direct</h3>
+        <p class="text-sm text-white/60">Rudy &amp; Kimberly décryptent chaque journée : résumés, réactions et analyses tactiques sur RK NEWS TV.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SÉLECTION HAÏTIENNE ============ -->
+<section id="selection" class="relative py-20 md:py-28 px-5 md:px-10 bg-gradient-to-b from-haiti-blue/20 via-ink to-haiti-red/10">
+  <div class="max-w-7xl mx-auto">
+    <div class="reveal text-center mb-14">
+      <p class="uppercase tracking-[0.3em] text-gold text-xs font-bold mb-2">🇭🇹 Le Cœur de RK News TV</p>
+      <h2 class="font-display text-4xl md:text-7xl">
+        <span class="text-haiti-blue">LES</span> <span class="text-haiti-red">GRENADIERS</span>
+      </h2>
+      <p class="text-white/60 mt-4 max-w-2xl mx-auto">La sélection nationale d'Haïti porte les couleurs et les rêves de tout un peuple. RK NEWS TV suit chaque pas de l'équipe vers le Mondial.</p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-6 mb-10">
+      <div class="reveal bg-card/80 border border-white/5 rounded-2xl p-8 relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-haiti-blue/30 rounded-full blob"></div>
+        <h3 class="font-display text-2xl mb-3 relative">Une fierté nationale</h3>
+        <p class="text-sm text-white/70 relative leading-relaxed">
+          Depuis des décennies, l'équipe nationale d'Haïti incarne la persévérance et la passion du football haïtien.
+          Chaque match des Grenadiers est un événement suivi avec ferveur par la diaspora et le pays tout entier.
+        </p>
+      </div>
+      <div class="reveal bg-card/80 border border-white/5 rounded-2xl p-8 relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-haiti-red/30 rounded-full blob"></div>
+        <h3 class="font-display text-2xl mb-3 relative">Soutenons les Grenadiers</h3>
+        <p class="text-sm text-white/70 relative leading-relaxed">
+          Sur RK NEWS TV, Rudy &amp; Kimberly partagent les actualités, les performances et les temps forts de la sélection
+          en route vers la Coupe du Monde 2026 — restez connectés pour ne rien manquer.
+        </p>
+      </div>
+    </div>
+
+    <div class="reveal flex flex-wrap items-center justify-center gap-4 text-center">
+      <span class="px-6 py-3 rounded-full bg-haiti-blue/20 border border-haiti-blue/40 font-display tracking-widest text-sm">🔵 BLEU</span>
+      <span class="px-6 py-3 rounded-full bg-white/10 border border-white/30 font-display tracking-widest text-sm">⚪ BLANC</span>
+      <span class="px-6 py-3 rounded-full bg-haiti-red/20 border border-haiti-red/40 font-display tracking-widest text-sm">🔴 ROUGE</span>
+      <span class="px-6 py-3 rounded-full bg-gold/20 border border-gold/40 font-display tracking-widest text-sm text-gold">⚽ HAÏTI EN MARCHE</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ GALERIE ============ -->
+<section id="galerie" class="py-20 md:py-28 px-5 md:px-10 max-w-7xl mx-auto">
+  <div class="reveal mb-12 text-center">
+    <p class="uppercase tracking-[0.3em] text-gold text-xs font-bold mb-2">Les visages de RK News TV</p>
+    <h2 class="font-display text-4xl md:text-6xl">RUDY &amp; <span class="text-haiti-red">KIMBERLY</span></h2>
+    <p class="text-white/60 mt-3 max-w-2xl mx-auto">Les deux voix passionnées qui font vibrer le sport haïtien, jour après jour.</p>
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-6">
+    <div class="reveal gallery-item rounded-2xl overflow-hidden border border-white/5 shadow-2xl relative group">
+      <img src="assets/rk-news-tv/rudy-kimberly-hero.jpg" alt="Rudy Sanon et Kimberly en plateau" class="w-full h-72 md:h-96 object-cover">
+      <div class="absolute inset-0 bg-gradient-to-t from-ink via-ink/10 to-transparent"></div>
+      <div class="absolute bottom-5 left-5">
+        <h3 class="font-display text-2xl">En plateau</h3>
+        <p class="text-sm text-white/70">Décryptage Mondial 2026</p>
+      </div>
+    </div>
+
+    <div class="reveal gallery-item rounded-2xl overflow-hidden border border-white/5 shadow-2xl relative group">
+      <img src="assets/rk-news-tv/rudy-kimberly.jpg" alt="Capture d'écran de la chaîne Team Rudy Officiel" class="w-full h-72 md:h-96 object-cover object-top">
+      <div class="absolute inset-0 bg-gradient-to-t from-ink via-ink/10 to-transparent"></div>
+      <div class="absolute bottom-5 left-5">
+        <h3 class="font-display text-2xl">Team Rudy Officiel</h3>
+        <p class="text-sm text-white/70">La chaîne YouTube officielle</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="border-t border-white/5 py-12 px-5 md:px-10">
+  <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+    <a href="#accueil" class="font-display text-xl tracking-wider flex items-center gap-2">
+      RK<span class="bg-haiti-red text-white px-2 rounded ml-1">NEWS</span><span class="text-gold">TV</span>
+    </a>
+    <p class="text-xs text-white/40 text-center">© 2026 RK NEWS TV — Le Direct Sport avec Rudy Sanon &amp; Kimberly. Tous droits réservés.</p>
+    <div class="flex gap-4 text-sm font-semibold">
+      <a href="https://www.youtube.com/@TEAMRUDYOFFICIEL" target="_blank" rel="noopener" class="hover:text-haiti-red transition-colors">YouTube</a>
+      <a href="#direct" class="hover:text-gold transition-colors">Direct</a>
+      <a href="#mondial" class="hover:text-gold transition-colors">Mondial 2026</a>
+    </div>
+  </div>
+</footer>
+
 <script>
-    const RK_CHANNEL_ID = 'UCmHhzmUQNtqdPtk22GVR2Bg';
+  const RK_CHANNEL_ID = 'UCmHhzmUQNtqdPtk22GVR2Bg';
 
-    function changerChaineLive() {
-        const player = document.getElementById('tv-player');
-        const status = document.getElementById('live-status');
+  function setActiveWindow(name) {
+    document.querySelectorAll('.video-window').forEach(el => {
+      el.classList.toggle('active', el.dataset.window === name);
+    });
+  }
 
-        player.src = "https://www.youtube.com/embed/live_stream?channel=" + RK_CHANNEL_ID + "&autoplay=1";
-        status.textContent = "🔴 EN DIRECT";
-        status.classList.add('live');
-    }
+  function changerChaineLive() {
+    const player = document.getElementById('tv-player');
+    const status = document.getElementById('live-status');
+    player.src = "https://www.youtube.com/embed/live_stream?channel=" + RK_CHANNEL_ID + "&autoplay=1&mute=1";
+    status.innerHTML = '<span class="w-2 h-2 rounded-full bg-white pulse-dot"></span> En direct';
+    status.classList.remove('bg-gold/90', 'text-ink');
+    status.classList.add('bg-haiti-red/90', 'text-white');
+    setActiveWindow('live');
+  }
 
-    function changerChaine(id, isLive) {
-        const player = document.getElementById('tv-player');
-        const status = document.getElementById('live-status');
+  function changerChaine(channelId, type) {
+    const player = document.getElementById('tv-player');
+    const status = document.getElementById('live-status');
+    // En attendant les playlists dédiées, on affiche les dernières vidéos de la chaîne
+    player.src = "https://www.youtube.com/embed?listType=user_uploads&list=" + channelId;
+    status.innerHTML = 'Mode continu';
+    status.classList.remove('bg-haiti-red/90', 'text-white');
+    status.classList.add('bg-gold/90', 'text-ink');
+    setActiveWindow(type);
+  }
 
-        if (isLive) {
-            changerChaineLive();
-        } else {
-            player.src = "https://www.youtube.com/embed/videoseries?list=" + id + "&autoplay=1";
-            status.textContent = "MODE CONTINU";
-            status.classList.remove('live');
-        }
-    }
+  // Mobile menu
+  const menuBtn = document.getElementById('menuBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  menuBtn.addEventListener('click', () => {
+    mobileMenu.classList.toggle('hidden');
+    mobileMenu.classList.toggle('flex');
+  });
+  mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    mobileMenu.classList.add('hidden');
+    mobileMenu.classList.remove('flex');
+  }));
+
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in-view');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => io.observe(el));
+
+  // Scroll progress bar + active nav link
+  const progress = document.getElementById('progress');
+  const navLinks = document.querySelectorAll('.nav-link');
+  const sections = ['accueil','direct','mondial','selection','galerie'].map(id => document.getElementById(id));
+
+  window.addEventListener('scroll', () => {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    progress.style.width = (scrollTop / docHeight * 100) + '%';
+
+    let current = sections[0].id;
+    sections.forEach(sec => {
+      if (scrollTop >= sec.offsetTop - 120) current = sec.id;
+    });
+    navLinks.forEach(link => {
+      link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+    });
+  });
+
+  // Countdown to World Cup 2026 opening match (June 11, 2026, Mexico City)
+  const targetDate = new Date('2026-06-11T18:00:00Z').getTime();
+  function updateCountdown() {
+    const now = Date.now();
+    let diff = targetDate - now;
+    if (diff < 0) diff = 0;
+    const days = Math.floor(diff / (1000*60*60*24));
+    const hours = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+    const minutes = Math.floor((diff % (1000*60*60)) / (1000*60));
+    const seconds = Math.floor((diff % (1000*60)) / 1000);
+    document.getElementById('cd-days').textContent = String(days).padStart(2,'0');
+    document.getElementById('cd-hours').textContent = String(hours).padStart(2,'0');
+    document.getElementById('cd-minutes').textContent = String(minutes).padStart(2,'0');
+    document.getElementById('cd-seconds').textContent = String(seconds).padStart(2,'0');
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
 </script>
 
 </body>
