@@ -49,6 +49,12 @@
             letter-spacing: 1px;
         }
 
+        .live-badge.live {
+            background-color: var(--live-red);
+            color: #ffffff;
+            border-color: var(--live-red);
+        }
+
         /* ====== STUDIO LAYOUT ====== */
         .tv-container {
             display: grid;
@@ -137,14 +143,14 @@
 
 <header>
     <div class="logo">RK<span class="news">NEWS</span><span class="tv">TV</span></div>
-    <div class="live-badge" id="live-status">MODE CONTINU</div>
+    <div class="live-badge live" id="live-status">🔴 EN DIRECT</div>
 </header>
 
 <div class="tv-container">
     <!-- ÉCRAN PRINCIPAL DE DIFFUSION -->
     <div class="main-screen">
-        <!-- ICI : Remplacer l'ID après "list=" par l'ID de leur playlist de secours YouTube principale -->
-        <iframe id="tv-player" src="https://www.youtube.com/embed/videoseries?list=PL_METTRE_PLAYLIST_ICI" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <!-- Affiche automatiquement le direct en cours de la chaîne YouTube de RK NEWS TV -->
+        <iframe id="tv-player" src="https://www.youtube.com/embed/live_stream?channel=UCmHhzmUQNtqdPtk22GVR2Bg&autoplay=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </div>
 
     <!-- GRILLE DES CHAÎNES / PROGRAMMES -->
@@ -152,7 +158,7 @@
         <div class="playlist-title">Chaînes disponibles</div>
 
         <!-- CHAÎNE 1 : LE LIVE DIRECT -->
-        <div class="video-item" onclick="changerChaine('METTRE_ID_LIVE_YOUTUBE_ICI', true)">
+        <div class="video-item" onclick="changerChaineLive()">
             <div class="video-thumb">🔴</div>
             <div class="video-info">
                 <h4>[DIRECT] Antenne Principale</h4>
@@ -181,22 +187,27 @@
 </div>
 
 <script>
+    const RK_CHANNEL_ID = 'UCmHhzmUQNtqdPtk22GVR2Bg';
+
+    function changerChaineLive() {
+        const player = document.getElementById('tv-player');
+        const status = document.getElementById('live-status');
+
+        player.src = "https://www.youtube.com/embed/live_stream?channel=" + RK_CHANNEL_ID + "&autoplay=1";
+        status.textContent = "🔴 EN DIRECT";
+        status.classList.add('live');
+    }
+
     function changerChaine(id, isLive) {
         const player = document.getElementById('tv-player');
         const status = document.getElementById('live-status');
 
         if (isLive) {
-            player.src = "https://www.youtube.com/embed/" + id + "?autoplay=1";
-            status.textContent = "🔴 EN DIRECT";
-            status.style.backgroundColor = "#ce1126";
-            status.style.color = "#ffffff";
-            status.style.borderColor = "#ce1126";
+            changerChaineLive();
         } else {
             player.src = "https://www.youtube.com/embed/videoseries?list=" + id + "&autoplay=1";
             status.textContent = "MODE CONTINU";
-            status.style.backgroundColor = "transparent";
-            status.style.borderColor = "#e8c547";
-            status.style.color = "#e8c547";
+            status.classList.remove('live');
         }
     }
 </script>
